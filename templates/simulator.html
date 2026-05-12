@@ -1,35 +1,66 @@
-<body class="bg-white p-10 font-['Nunito']">
-    <h1 class="text-center text-4xl font-extrabold text-[#10b981] mb-20">Dynamic Partition - Preemptive SJF Simulator</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Partition - Preemptive SJF Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        body { font-family: 'Nunito', sans-serif; background-color: white; color: black; }
+        .at-input, .bt-input {
+            background-color: #f3f4f6;
+            transition: all 0.2s;
+        }
+        .at-input:focus, .bt-input:focus {
+            background-color: #e5e7eb;
+            outline: 2px solid #10b981;
+        }
+    </style>
+</head>
+<body class="p-10">
+    <header class="mb-20">
+        <h1 class="text-center text-4xl font-extrabold text-[#10b981]">Dynamic Partition - Preemptive SJF Simulator</h1>
+    </header>
     
-    <div class="flex justify-between items-start max-w-[1400px] mx-auto gap-20">
-        <!-- Input Side -->
+    <div class="flex justify-between items-start max-w-[1400px] mx-auto gap-16">
+        <!-- LEFT COLUMN: PROCESS INPUTS -->
         <div class="flex-1">
-            <h2 class="text-[#10b981] text-3xl font-bold mb-8 text-center">Process Input</h2>
+            <h2 class="text-[#10b981] text-3xl font-bold mb-8 text-center uppercase tracking-wide">Process Input</h2>
+            
             <div class="flex gap-4 mb-10">
-                <button onclick="addProcess()" class="bg-[#10b981] text-white py-3 rounded-lg font-bold text-lg flex-1">Add Process</button>
-                <button onclick="endAll()" class="bg-[#10b981] text-white py-3 rounded-lg font-bold text-lg flex-1">End All Processes</button>
+                <button onclick="addProcess()" class="bg-[#10b981] text-white py-3 rounded-lg font-bold text-lg flex-1 shadow-md hover:bg-[#0ea672]">Add Process</button>
+                <button onclick="endAll()" class="bg-[#10b981] text-white py-3 rounded-lg font-bold text-lg flex-1 shadow-md hover:bg-[#0ea672]">End All Processes</button>
             </div>
 
-            <div class="grid grid-cols-4 gap-4 mb-4 px-2 text-[#10b981] font-bold text-lg">
+            <div class="grid grid-cols-4 gap-4 mb-4 px-2 text-[#10b981] font-extrabold text-sm uppercase">
                 <div class="text-center">Process</div>
                 <div class="text-center">Arrival Time</div>
                 <div class="text-center">Burst Time</div>
                 <div></div>
             </div>
 
-            <div id="process-list" class="space-y-4"></div>
+            <div id="process-list" class="space-y-4">
+                <!-- JavaScript populates rows here -->
+            </div>
             
-            <button onclick="window.location.href='/statistics'" class="mt-12 w-full bg-[#10b981] text-white py-4 rounded-xl text-2xl font-bold">Calculate Stats</button>
+            <button onclick="window.location.href='/statistics'" class="mt-12 w-full bg-[#10b981] text-white py-4 rounded-xl text-2xl font-bold shadow-xl hover:bg-[#0ea672] transition-all">
+                Calculate Stats
+            </button>
         </div>
 
-        <!-- Scale Side (3.png exact) -->
-        <div class="w-[400px] flex flex-col items-center">
-            <div class="w-full bg-white shadow-2xl rounded-sm border border-gray-200 overflow-hidden min-h-[500px] flex flex-col">
-                <div class="bg-gray-400 py-1 text-center text-white text-xs font-bold">Kernel</div>
+        <!-- RIGHT COLUMN: SCALE (3.png Replication) -->
+        <div class="w-[380px] flex flex-col items-center">
+            <div class="w-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-sm border border-gray-100 overflow-hidden min-h-[600px] flex flex-col">
+                <div class="bg-gray-400 py-1.5 text-center text-white text-[10px] font-bold uppercase tracking-widest">Kernel</div>
                 <div id="cpu-scale" class="flex-grow flex flex-col">
-                    <!-- Blocks stack top-down to show memory/partition usage -->
+                    <!-- Dynamic Partition blocks populate here -->
                 </div>
             </div>
+            <p class="mt-4 text-gray-400 font-bold text-sm uppercase tracking-widest">CPU Scale</p>
         </div>
     </div>
+
+    <script src="/static/js/script.js"></script>
 </body>
+</html>
