@@ -1,25 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dynamic Partition - Preemptive SJF CPU Algorithm</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body class="flex flex-col items-center justify-center min-h-screen p-10">
-    <h1 class="text-4xl font-bold text-[#10b981] text-center mb-16 max-w-5xl">
+<body class="bg-[#1a2426] flex flex-col items-center min-h-screen p-10 pt-20">
+    <h1 class="text-[#10b981] text-4xl font-extrabold text-center max-w-5xl mb-10">
         What is Dynamic Partition - Preemptive Shortest Job First (SJF) CPU Algorithm Scheduling?
     </h1>
-    <div class="bg-[#f0f0f0] rounded-[60px] p-16 max-w-6xl shadow-2xl">
-        <p class="text-[#2d3748] text-2xl text-center leading-relaxed font-medium">
-            Preemptive Shortest Job First (SJF) scheduling, often called Shortest Remaining Time First (SRTF), is a dynamic CPU management strategy where the scheduler selects the process with the smallest remaining execution time to run next...
+    
+    <div class="bg-[#f0f0f0] rounded-[30px] p-12 max-w-5xl shadow-xl">
+        <p class="text-[#2d3748] text-xl text-center leading-relaxed font-semibold">
+            Preemptive Shortest Job First (SJF) scheduling, often called Shortest Remaining Time First (SRTF), is a dynamic CPU management strategy where the scheduler selects the process with the smallest remaining execution time to run next. Unlike the non-preemptive version, this algorithm can interrupt a currently running process if a new task arrives with an even shorter burst time. In the context of dynamic partitioning, this ensures that short processes do not get stuck behind long-running tasks, minimizing the Average Waiting Time. However, it requires the system to constantly monitor and compare remaining times, which increases overhead, and it carries the risk of starvation for longer processes if a steady stream of short tasks keeps entering the queue.
         </p>
     </div>
-    <div class="flex items-center gap-10 mt-20">
-        <button onclick="window.history.back()" class="text-[#10b981]">
-            <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+
+    <div class="flex items-center gap-6 mt-12">
+        <button type="button" aria-label="Go back" onclick="window.history.back()" class="text-[#10b981]">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
         </button>
-        <a href="/simulator" class="bg-[#10b981] text-white px-16 py-4 rounded-xl text-2xl font-bold shadow-lg">Proceed</a>
+        <a href="/simulator" class="bg-[#10b981] text-white px-10 py-2 rounded-lg text-xl font-bold shadow-md">Proceed</a>
     </div>
 </body>
-</html>
