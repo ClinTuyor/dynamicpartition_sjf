@@ -2,54 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Console | SJF Simulator</title>
+    <title>TuyoursTruly | SJF-P Monitor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body class="p-8">
-    <nav class="max-w-7xl mx-auto mb-12 flex justify-between items-center border-b border-slate-800 pb-6">
-        <h2 class="text-sm font-bold tracking-widest uppercase text-slate-500">Workspace / <span class="text-white">Active_Simulation</span></h2>
-        <div class="text-[10px] font-mono text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded">SYSTEM_READY</div>
+    <nav aria-label="Main Navigation" class="max-w-7xl mx-auto mb-12 flex justify-between items-center border-b border-slate-800 pb-6">
+        <h1 class="text-2xl font-light tracking-tighter">
+            TuyoursTruly <span class="font-bold text-white">SJF-P Monitor</span>
+        </h1>
+        <div class="text-[10px] font-mono text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20">LIVE_KERNEL_READY</div>
     </nav>
 
-    <main class="max-w-7xl mx-auto grid grid-cols-12 gap-10 items-start">
-        <!-- Input Workspace -->
+    <main class="max-w-7xl mx-auto grid grid-cols-12 gap-10">
         <div class="col-span-12 lg:col-span-8 space-y-6">
             <div class="flex gap-4">
-                <button onclick="addProcess()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">
-                    + Initialize Process
-                </button>
-                <button onclick="endAll()" class="border border-slate-800 hover:bg-slate-900 px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-500 transition-all">
-                    Reset Buffer
-                </button>
+                <button onclick="addProcess()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">Initialize Process</button>
+                <button onclick="endAll()" class="border border-slate-800 hover:bg-slate-900 px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-500 transition-all">Clear Buffer</button>
             </div>
 
             <div class="glass-panel p-1">
-                <div class="grid grid-cols-[80px_1fr_1fr_60px] gap-4 p-4 border-b border-slate-800 text-[10px] font-bold uppercase tracking-widest text-slate-600">
+                <div class="grid grid-cols-[80px_1fr_1fr_60px] gap-4 p-4 border-b border-slate-800 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                     <div>Process</div>
                     <div>Arrival Time</div>
                     <div>Burst Time</div>
                     <div class="text-right">Action</div>
                 </div>
-                <div id="process-list" class="divide-y divide-slate-800/50">
-                    <!-- Dynamic Rows -->
-                </div>
+                <div id="process-list" class="divide-y divide-slate-800/50"></div>
             </div>
 
-            <button onclick="window.location.href='/statistics'" class="w-full py-5 glass-panel hover:bg-emerald-500/5 border-emerald-500/20 text-emerald-500 font-bold tracking-[0.2em] uppercase transition-all">
+            <button onclick="handleExecution()" class="w-full py-5 glass-panel hover:bg-emerald-500/5 border-emerald-500/20 text-emerald-500 font-bold tracking-[0.2em] uppercase transition-all">
                 Execute & Generate Analytics
             </button>
         </div>
 
-        <!-- The Water Bottle Scale -->
         <div class="col-span-12 lg:col-span-4 sticky top-8">
-            <div id="cpu-scale-container" class="h-[600px] relative flex flex-col justify-end overflow-hidden">
+            <div id="cpu-scale-container" class="h-[600px] relative flex flex-col justify-end overflow-hidden glass-panel border-slate-800 bg-slate-950/50">
                 <div id="cpu-scale" class="flex flex-col no-scrollbar"></div>
-                <div class="absolute top-0 left-0 w-full p-3 text-[10px] uppercase font-bold tracking-[0.2em] text-slate-500 bg-slate-900/90 backdrop-blur border-b border-slate-800 z-10">
-                    CPU_STREAM_LOG
-                </div>
+                <div class="absolute top-0 left-0 w-full p-3 text-[10px] uppercase font-bold tracking-widest text-slate-500 bg-slate-900/90 border-b border-slate-800 z-10">CPU_GANTT_STREAM</div>
             </div>
-            <p class="mt-4 text-center text-[10px] font-mono text-slate-600">TIME_INTERVAL_VISUALIZER</p>
         </div>
     </main>
 

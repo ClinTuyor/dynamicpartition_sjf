@@ -2,63 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Report | Analytics</title>
+    <title>Metrics | SJF-P Report</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body class="p-12">
-    <div class="max-w-5xl mx-auto space-y-12">
-        <header class="flex justify-between items-end border-b border-slate-800 pb-10">
-            <div class="space-y-1">
-                <h1 class="text-4xl font-bold tracking-tight text-white">Execution <span class="text-emerald-500">Metrics</span></h1>
-                <p class="text-slate-500 font-mono text-xs">LOG_ID: SIM_8829_ALPHA</p>
-            </div>
-            <button onclick="window.location.href='/simulator'" class="text-[10px] font-bold text-slate-400 hover:text-white uppercase tracking-widest border border-slate-800 px-4 py-2 rounded transition-all">
-                New Simulation
-            </button>
+    <div class="max-w-6xl mx-auto space-y-10">
+        <header class="flex justify-between items-end border-b border-slate-800 pb-8">
+            <h1 class="text-3xl font-bold text-white">Execution <span class="text-emerald-500">Analytics</span></h1>
+            <a href="/simulator" class="text-xs font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors">New Session</a>
         </header>
 
-        <div id="stats-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Cards injected by JS -->
-        </div>
+        <div id="stats-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </div>
 
     <script>
         const rawData = localStorage.getItem('simulationResults');
+        const grid = document.getElementById('stats-grid');
+
+        // Positive logic fix for SonarQube
         if (rawData) {
             const { stats, processes } = JSON.parse(rawData);
-            const grid = document.getElementById('stats-grid');
-            
             stats.forEach(s => {
                 const p = processes.find(proc => proc.name === s.name);
                 const card = document.createElement('div');
-                card.className = "glass-panel p-8 space-y-6 group hover:border-emerald-500/30 transition-all";
+                card.className = "glass-panel p-6 space-y-6";
                 card.innerHTML = `
                     <div class="flex justify-between items-center">
-                        <h3 class="font-mono text-2xl font-bold" style="color: ${p.color}">${s.name}</h3>
-                        <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                        <h3 class="font-mono text-xl font-bold" style="color:${p.color}">${s.name}</h3>
                     </div>
-                    <div class="grid grid-cols-2 gap-y-6 gap-x-4">
-                        <div class="space-y-1">
-                            <p class="text-[10px] uppercase tracking-widest text-slate-600 font-bold">Completion</p>
-                            <p class="text-xl font-light">${s.ct}<span class="text-xs text-slate-500 ml-1">ms</span></p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <span class="text-[9px] uppercase text-slate-500 font-bold">Waiting</span>
+                            <span class="text-xl text-white">${s.wt}ms</span>
                         </div>
-                        <div class="space-y-1">
-                            <p class="text-[10px] uppercase tracking-widest text-slate-600 font-bold">Turnaround</p>
-                            <p class="text-xl font-light">${s.tat}<span class="text-xs text-slate-500 ml-1">ms</span></p>
+                        <div class="flex flex-col">
+                            <span class="text-[9px] uppercase text-slate-500 font-bold">Turnaround</span>
+                            <span class="text-xl text-white">${s.tat}ms</span>
                         </div>
-                        <div class="space-y-1">
-                            <p class="text-[10px] uppercase tracking-widest text-slate-600 font-bold">Waiting</p>
-                            <p class="text-xl font-light text-emerald-400">${s.wt}<span class="text-xs text-slate-500 ml-1">ms</span></p>
-                        </div>
-                        <div class="space-y-1">
-                            <p class="text-[10px] uppercase tracking-widest text-slate-600 font-bold">Response</p>
-                            <p class="text-xl font-light">${s.rt}<span class="text-xs text-slate-500 ml-1">ms</span></p>
-                        </div>
-                    </div>
-                `;
+                    </div>`;
                 grid.appendChild(card);
             });
+        } else {
+            grid.innerHTML = `
+                <div class="col-span-full py-20 text-center glass-panel">
+                    <p class="text-slate-500 font-mono text-sm uppercase tracking-widest">No active simulation data found.</p>
+                </div>`;
         }
     </script>
 </body>

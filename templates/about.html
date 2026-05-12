@@ -2,104 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Documentation | SJF Preemptive</title>
+    <title>About | SJF-P Logic</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body class="bg-[#0b0f1a] min-h-screen">
-    <!-- Header Navigation -->
-    <nav aria-label="Main Navigation" class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <span class="text-emerald-500 font-mono text-sm font-bold tracking-widest">DOC_ID: SRTF_001</span>
-                <div class="h-4 w-[1px] bg-slate-700"></div>
-                <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">Technical Manual</span>
+<body class="p-12 lg:p-24">
+    <div class="max-w-4xl mx-auto space-y-12">
+        <header class="border-b border-slate-800 pb-8">
+            <button onclick="window.history.back()" class="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-4 hover:text-emerald-400 transition-colors flex items-center gap-2">
+                ← Return to Monitor
+            </button>
+            <h1 class="text-4xl font-bold tracking-tight text-white">System <span class="text-emerald-500">Documentation</span></h1>
+        </header>
+
+        <section class="space-y-8">
+            <div class="glass-panel p-10 leading-relaxed text-slate-300 border-l-4 border-l-emerald-500 bg-emerald-500/5 text-lg">
+                Preemptive Shortest Job First (SJF) scheduling, often called Shortest Remaining Time First (SRTF), is a dynamic CPU management strategy where the scheduler selects the process with the smallest remaining execution time to run next. Unlike the non-preemptive version, this algorithm can interrupt a currently running process if a new task arrives with an even shorter burst time. In the context of dynamic partitioning, this ensures that short processes do not get stuck behind long-running tasks, minimizing the Average Waiting Time. However, it requires the system to constantly monitor and compare remaining times, which increases overhead, and it carries the risk of starvation for longer processes if a steady stream of short tasks keeps entering the queue.
             </div>
-            <a href="/" class="text-xs font-bold text-slate-500 hover:text-white transition-colors uppercase tracking-[0.2em]">Exit to Terminal</a>
-        </div>
-    </nav>
 
-    <main class="max-w-6xl mx-auto px-8 py-16 grid grid-cols-12 gap-12">
-        <!-- Sidebar Navigation -->
-        <aside class="col-span-12 lg:col-span-3 space-y-8">
-            <div class="space-y-4">
-                <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.3em]">Sections</p>
-                <nav aria-label="Documentation Sections" class="flex flex-col gap-3">
-                    <a href="#core-logic" class="text-sm text-white hover:text-emerald-400 transition-colors">01. Core Logic</a>
-                    <a href="#preemption" class="text-sm text-slate-500 hover:text-white transition-colors">02. Preemption Rule</a>
-                    <a href="#metrics" class="text-sm text-slate-500 hover:text-white transition-colors">03. Performance Metrics</a>
-                </nav>
-            </div>
-        </aside>
-
-        <!-- Content Area -->
-        <div class="col-span-12 lg:col-span-9 space-y-20">
-            
-            <!-- Section 1: Overview -->
-            <section id="core-logic" class="space-y-6">
-                <div class="space-y-2">
-                    <h2 class="text-4xl font-bold tracking-tight text-white">Algorithm <span class="text-emerald-500">Overview</span></h2>
-                    <p class="text-slate-400 leading-relaxed text-lg font-light">
-                        Preemptive Shortest Job First (SJF), also known as Shortest Remaining Time First (SRTF), is a scheduling strategy where the CPU is allocated to the process that is closest to completion.
-                    </p>
+            <nav aria-label="Documentation Sections" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-panel p-6 space-y-2">
+                    <h3 class="text-xs font-bold uppercase text-emerald-500 tracking-wider">Advantage</h3>
+                    <p class="text-sm text-slate-400">Optimum average waiting time for a given set of processes.</p>
                 </div>
-
-                <div class="glass-panel p-6 border-l-4 border-l-emerald-500 bg-emerald-500/5">
-                    <p class="text-sm text-slate-300 italic">
-                        "If a new process arrives with a CPU burst length less than the remaining time of the current executing process, the current process is preempted."
-                    </p>
+                <div class="glass-panel p-6 space-y-2">
+                    <h3 class="text-xs font-bold uppercase text-red-400 tracking-wider">Risk</h3>
+                    <p class="text-sm text-slate-400">Starvation of longer processes if short tasks arrive continuously.</p>
                 </div>
-            </section>
-
-            <!-- Section 2: Technical Logic -->
-            <section id="preemption" class="space-y-6">
-                <h3 class="text-xs font-bold uppercase tracking-[0.4em] text-slate-500">Execution Flow</h3>
-                <div class="glass-panel overflow-hidden">
-                    <div class="bg-slate-800/50 px-4 py-2 border-b border-slate-800 flex gap-2">
-                        <div class="w-2 h-2 rounded-full bg-red-500/50"></div>
-                        <div class="w-2 h-2 rounded-full bg-yellow-500/50"></div>
-                        <div class="w-2 h-2 rounded-full bg-emerald-500/50"></div>
-                    </div>
-                    <pre class="p-6 font-mono text-sm text-emerald-400 leading-6 overflow-x-auto">
-<span>// Pseudo-Logic for SRTF Scheduler</span>
-<span>while (processes_remaining) {</span>
-<span>    current = find_shortest_remaining_time(ready_queue);</span>
-<span>    execute(current, 1_time_unit);</span>
-<span>    if (new_arrival.burst < current.remaining_time) {</span>
-<span>        preempt(current);</span>
-<span>        current = new_arrival;</span>
-<span>    }</span>
-<span>}</span></pre>
-                </div>
-            </section>
-
-            <!-- Section 3: Advantage/Disadvantage Grid -->
-            <section id="metrics" class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20">
-                <div class="glass-panel p-8 space-y-4">
-                    <div class="w-8 h-8 rounded bg-emerald-500/10 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </div>
-                    <h4 class="font-bold text-white uppercase tracking-wider text-xs">Advantage</h4>
-                    <p class="text-sm text-slate-400 leading-relaxed">
-                        Produces the minimum average waiting time for a given set of processes. It ensures high-turnover for small tasks.
-                    </p>
-                </div>
-
-                <div class="glass-panel p-8 space-y-4 border-slate-800">
-                    <div class="w-8 h-8 rounded bg-red-500/10 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </div>
-                    <h4 class="font-bold text-white uppercase tracking-wider text-xs">Limitation</h4>
-                    <p class="text-sm text-slate-400 leading-relaxed">
-                        Requires knowledge of future CPU burst times, which is difficult to estimate. Long processes may face starvation.
-                    </p>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <footer class="border-t border-slate-800 py-12 text-center">
-        <p class="text-[10px] font-mono text-slate-600 uppercase tracking-[0.5em]">End of Documentation</p>
-    </footer>
+            </nav>
+        </section>
+    </div>
 </body>
 </html>

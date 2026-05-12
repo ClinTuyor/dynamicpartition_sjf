@@ -6,7 +6,6 @@
     --accent: #10b981;
     --border: rgba(255, 255, 255, 0.08);
     --text-main: #f8fafc;
-    --text-dim: #94a3b8;
 }
 
 body {
@@ -17,41 +16,34 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Glassmorphism Panel */
 .glass-panel {
     background: var(--card);
     border: 1px solid var(--border);
     backdrop-filter: blur(12px);
     border-radius: 12px;
-    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
 }
 
-/* Industrial Inputs */
 .input-field {
     background: rgba(15, 23, 42, 0.6);
     border: 1px solid var(--border);
     color: var(--text-main);
     font-family: 'Roboto Mono', monospace;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
 }
 
 .input-field:focus {
     border-color: var(--accent);
-    background: rgba(16, 185, 129, 0.03);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+    background: rgba(16, 185, 129, 0.03);
 }
 
-/* Water Bottle Animation */
 @keyframes liquidFill {
-    from { transform: translateY(20px); opacity: 0; }
+    from { transform: translateY(15px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
 
 .animate-fill {
-    animation: liquidFill 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: liquidFill 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-/* Hide scrollbars */
 .no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
