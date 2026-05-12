@@ -2,28 +2,9 @@ from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
-# Logic helper for Preemptive SJF
-def get_next_process(at, rt, current_time):
-    idx = -1
-    min_rt = float('inf')
-    for i, (arrival, remaining) in enumerate(zip(at, rt)):
-        if arrival <= current_time and remaining > 0:
-            if remaining < min_rt or (remaining == min_rt and (idx == -1 or arrival < at[idx])):
-                min_rt = remaining
-                idx = i
-    return idx
-
 @app.route('/')
 def index():
     return render_template('index.html')
-
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-@app.route('/simulator')
-def simulator():
-    return render_template('simulator.html')
 
 @app.route('/statistics')
 def statistics():
@@ -33,48 +14,64 @@ def statistics():
 def calculate():
     data = request.get_json()
     processes = data.get('processes', [])
+    
     if not processes:
-        return jsonify({'gantt': [], 'stats': []})
+        return jsonify({'gantt': [], 'stats': {}})
 
-    n = len(processes)
-    at = [int(p['at']) for p in processes]
-    bt = [int(p['bt']) for p in processes]
-    rt = bt.copy()
-    names = [p['name'] for p in processes]
+    # Setup for SJF-P Logic
+    # We use a copy to track 'remaining time' without losing the original burst values
+    for p in processes:
+        p['remaining'] = float(p['bt'])
+        p['at'] = float(p['at'])
 
-    ct = [0] * n
-    start_times = [-1] * n
+    time = 0
     completed = 0
-    current_time = 0
+    n = len(processes)
     gantt = []
-
+    
+    # Statistics tracking
+    finish_times = {p['name']: 0 for p in processes}
+    
     while completed < n:
-        idx = get_next_process(at, rt, current_time)
-        if idx != -1:
-            if start_times[idx] == -1:
-                start_times[idx] = current_time
-            rt[idx] -= 1
-            gantt.append({'id': names[idx], 'time': current_time})
-            if rt[idx] == 0:
-                completed += 1
-                ct[idx] = current_time + 1
-        current_time += 1
+        # Get all processes that have arrived and aren't finished
+        available = [p for p in processes if p['at'] <= time and p['remaining'] > 0]
+        
+        if not available:
+            time += 1
+            continue
+            
+        # SJF-P: Pick the one with the shortest REMAINING time
+        current = min(available, key=lambda x: x['remaining'])
+        
+        gantt.append({'id': current['name'], 'time': time})
+        current['remaining'] -= 1
+        time += 1
+        
+        if current['remaining'] <= 0:
+            completed += 1
+            finish_times[current['name']] = time
 
+    # Calculate Analytics
     stats = []
-    for i in range(n):
-        tat = ct[i] - at[i]
-        wt = tat - bt[i]
+    for p in processes:
+        # TAT = Finish Time - Arrival Time
+        # WT = TAT - Original Burst Time
+        tat = finish_times[p['name']] - p['at']
+        wt = tat - float(p['bt'])
         stats.append({
-            'name': names[i],
-            'at': at[i],
-            'bt': bt[i],
-            'ct': ct[i],
-            'tat': tat,
-            'wt': wt,
-            'rt': start_times[i] - at[i]
+            'name': p['name'],
+            'tat': round(tat, 2),
+            'wt': round(wt, 2)
         })
 
-    return jsonify({'gantt': gantt, 'stats': stats})
+    return jsonify({
+        'gantt': gantt,
+        'stats': {
+            'individual': stats,
+            'avg_tat': round(sum(s['tat'] for s in stats) / n, 2),
+            'avg_wt': round(sum(s['wt'] for s in stats) / n, 2)
+        }
+    })
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True)

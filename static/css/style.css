@@ -1,62 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto+Mono:wght@500&display=swap');
-
-:root {
-    --bg: #0b0f1a;
-    --card: #161b2a;
-    --accent: #10b981;
-    --border: rgba(255, 255, 255, 0.08);
-    --text-main: #f8fafc;
+/* --- Base Styling --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    background-color: var(--bg);
-    color: var(--text-main);
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    -webkit-font-smoothing: antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
 }
 
-.glass-panel {
-    background: var(--card);
-    border: 1px solid var(--border);
-    backdrop-filter: blur(12px);
-    border-radius: 12px;
-}
-
-.input-field {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid var(--border);
-    color: var(--text-main);
-    font-family: 'Roboto Mono', monospace;
-    transition: all 0.2s ease;
-}
-
-.input-field:focus {
-    border-color: var(--accent);
-    outline: none;
-    background: rgba(16, 185, 129, 0.03);
-}
-
-/* Horizontal Gantt Styling from image_d20eb7.png */
+/* --- Gantt Chart Core --- */
 .gantt-container {
     display: flex;
     width: 100%;
-    height: 80px;
-    background: #111827;
-    border-radius: 4px;
-    overflow-x: auto;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-}
-
-.gantt-container {
-    display: flex;
-    width: 100%;
-    height: 100px;
+    height: 85px;
     background: #0f172a;
     border-radius: 8px;
-    overflow: hidden; /* Important: Prevents extra processes from wrapping or disappearing */
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
 }
 
 .gantt-block {
@@ -64,17 +28,95 @@ body {
     align-items: center;
     justify-content: center;
     height: 100%;
-    font-family: 'Roboto Mono', monospace;
-    font-size: 12px; /* Smaller font to help P10+ fit visually */
+    font-family: 'JetBrains Mono', 'Roboto Mono', monospace;
+    font-size: 13px;
     font-weight: 800;
-    color: rgba(0, 0, 0, 0.8);
+    color: rgba(0, 0, 0, 0.7);
     border-right: 1px solid rgba(0, 0, 0, 0.1);
     white-space: nowrap;
-    transition: width 0.3s ease;
+    /* Smooth transition for when the Flex property updates */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.gantt-block:last-child {
-    border-right: none;
+/* --- Form Elements --- */
+.input-field {
+    background: #0b0f1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s ease;
 }
 
-.no-scrollbar::-webkit-scrollbar { display: none; }
+.input-field:focus {
+    border-color: #3b82f6;
+    outline: none;
+    background: #111827;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* --- Custom Scrollbar for the Process List --- */
+#process-list {
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+#process-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+#process-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#process-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+#process-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* --- Animation for the "Calculating" State --- */
+@keyframes pulse-subtle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+    animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* --- Layout Utility --- */
+.table-header {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(4px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Remove Arrows/Spinners from Number Inputs */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none; 
+    appearance: none; /* Added standard property */
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield; /* Added standard property */
+}
+
+/* --- Responsive Button Hover Effects --- */
+button {
+    transition: transform 0.1s active;
+}
+
+button:active {
+    transform: scale(0.98);
+}
