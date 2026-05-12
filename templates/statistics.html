@@ -2,25 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Analytics | SJF-P</title>
+    <title>SJF-P | Analytics</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="p-8">
-    <div class="max-w-4xl mx-auto">
-        <header class="flex justify-between items-center mb-12">
-            <h1 class="text-2xl font-bold text-white">Performance Metrics</h1>
-            <a href="/simulator" class="text-blue-500 hover:underline">Back to Simulator</a>
-        </header>
-
-        <div id="stats-content" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            <!-- Averages injected here -->
+    <div class="max-w-5xl mx-auto">
+        <div class="flex justify-between items-center mb-12">
+            <h1 class="text-3xl font-black text-white tracking-tight">Performance Metrics</h1>
+            <div class="flex gap-6">
+                <button onclick="hardReset()" class="text-red-400 font-bold text-xs uppercase tracking-widest hover:text-red-300">Back to Home</button>
+                <a href="/simulator" class="text-blue-500 font-bold text-xs uppercase tracking-widest hover:text-blue-400">Back to Simulator</a>
+            </div>
         </div>
 
-        <div class="bg-[#111827] rounded-lg border border-white/5 overflow-hidden">
-            <table class="w-full text-left text-sm">
+        <div id="stats-content" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"></div>
+
+        <div class="bg-[#111827] rounded-xl border border-white/5 overflow-hidden shadow-2xl">
+            <table class="w-full text-left">
                 <thead class="bg-white/5 text-slate-500 uppercase text-[10px] font-bold">
-                    <tr><th class="p-4">Process</th><th class="p-4">Wait Time</th><th class="p-4">Turnaround</th></tr>
+                    <tr><th class="p-6">Process</th><th class="p-6 text-center">Wait Time</th><th class="p-6 text-center">Turnaround Time</th></tr>
                 </thead>
                 <tbody id="table-body"></tbody>
             </table>
@@ -30,23 +31,28 @@
         const results = JSON.parse(localStorage.getItem('simulationResults'));
         if (results) {
             document.getElementById('stats-content').innerHTML = `
-                <div class="bg-[#111827] p-6 rounded border border-white/5 text-center">
-                    <p class="text-slate-500 text-xs mb-1">AVG WAIT TIME</p>
-                    <p class="text-3xl font-bold text-emerald-400">${results.stats.avg_wt}ms</p>
+                <div class="bg-[#111827] p-8 rounded-xl border border-white/5">
+                    <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-2">Average Wait Time</p>
+                    <p class="text-4xl font-black text-emerald-400">${results.stats.avg_wt}ms</p>
                 </div>
-                <div class="bg-[#111827] p-6 rounded border border-white/5 text-center">
-                    <p class="text-slate-500 text-xs mb-1">AVG TURNAROUND</p>
-                    <p class="text-3xl font-bold text-blue-400">${results.stats.avg_tat}ms</p>
+                <div class="bg-[#111827] p-8 rounded-xl border border-white/5">
+                    <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-2">Average Turnaround</p>
+                    <p class="text-4xl font-black text-blue-400">${results.stats.avg_tat}ms</p>
                 </div>`;
-            
             const tbody = document.getElementById('table-body');
             results.stats.individual.forEach(s => {
-                tbody.innerHTML += `<tr class="border-b border-white/5 text-white">
-                    <td class="p-4 font-mono">${s.name}</td>
-                    <td class="p-4">${s.wt}ms</td>
-                    <td class="p-4">${s.tat}ms</td>
-                </tr>`;
+                tbody.innerHTML += `
+                    <tr class="border-b border-white/5 hover:bg-white/[0.02] transition">
+                        <td class="p-6 text-white font-mono font-bold">${s.name}</td>
+                        <td class="p-6 text-center font-mono">${s.wt}ms</td>
+                        <td class="p-6 text-center font-mono">${s.tat}ms</td>
+                    </tr>`;
             });
+        }
+
+        function hardReset() {
+            localStorage.clear(); // Wipes everything
+            globalThis.location.href = '/'; // Go back to start
         }
     </script>
 </body>
