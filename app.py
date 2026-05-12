@@ -6,6 +6,14 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/simulator')
+def simulator():
+    return render_template('simulator.html')
+
 @app.route('/statistics')
 def statistics():
     return render_template('statistics.html')
@@ -14,12 +22,9 @@ def statistics():
 def calculate():
     data = request.get_json()
     processes = data.get('processes', [])
-    
     if not processes:
         return jsonify({'gantt': [], 'stats': {}})
 
-    # Setup for SJF-P Logic
-    # We use a copy to track 'remaining time' without losing the original burst values
     for p in processes:
         p['remaining'] = float(p['bt'])
         p['at'] = float(p['at'])
@@ -28,21 +33,15 @@ def calculate():
     completed = 0
     n = len(processes)
     gantt = []
-    
-    # Statistics tracking
     finish_times = {p['name']: 0 for p in processes}
     
     while completed < n:
-        # Get all processes that have arrived and aren't finished
         available = [p for p in processes if p['at'] <= time and p['remaining'] > 0]
-        
         if not available:
             time += 1
             continue
             
-        # SJF-P: Pick the one with the shortest REMAINING time
         current = min(available, key=lambda x: x['remaining'])
-        
         gantt.append({'id': current['name'], 'time': time})
         current['remaining'] -= 1
         time += 1
@@ -51,11 +50,8 @@ def calculate():
             completed += 1
             finish_times[current['name']] = time
 
-    # Calculate Analytics
     stats = []
     for p in processes:
-        # TAT = Finish Time - Arrival Time
-        # WT = TAT - Original Burst Time
         tat = finish_times[p['name']] - p['at']
         wt = tat - float(p['bt'])
         stats.append({

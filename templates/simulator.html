@@ -2,52 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TuyoursTruly | SJF-P Monitor</title>
+    <title>Simulator | SJF-P</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body class="p-8">
-    <nav class="max-w-7xl mx-auto mb-12 flex justify-between items-center border-b border-slate-800 pb-6">
-        <h1 class="text-2xl font-light tracking-tighter">
-            TuyoursTruly <span class="font-bold text-white">SJF-P Monitor</span>
-        </h1>
-        <div class="text-[10px] font-mono text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20">SYSTEM_READY</div>
-    </nav>
-
-    <main class="max-w-7xl mx-auto space-y-10">
-        <div class="grid grid-cols-12 gap-8">
-            <!-- Input Section -->
-            <div class="col-span-12 space-y-6">
-                <div class="flex gap-4">
-                    <button onclick="addProcess()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">Initialize Process</button>
-                    <button onclick="endAll()" class="border border-slate-800 hover:bg-slate-900 px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-500 transition-all">Clear Buffer</button>
-                </div>
-
-                <div class="glass-panel p-1">
-                    <div class="grid grid-cols-[100px_1fr_1fr_60px] gap-4 p-4 border-b border-slate-800 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                        <div>Process ID</div>
-                        <div>Arrival (ms)</div>
-                        <div>Burst (ms)</div>
-                        <div class="text-right">Action</div>
-                    </div>
-                    <div id="process-list" class="divide-y divide-slate-800/50"></div>
-                </div>
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <div class="flex gap-4">
+                <button onclick="addProcess()" class="bg-blue-600 text-white px-4 py-2 rounded text-xs font-bold">ADD PROCESS</button>
+                <button onclick="startSimulation()" class="bg-emerald-600 text-white px-4 py-2 rounded text-xs font-bold">START PROCESS</button>
+                <button onclick="endAll()" class="bg-slate-800 text-white px-4 py-2 rounded text-xs font-bold">CLEAR</button>
             </div>
+            <button onclick="handleExecution()" class="bg-white text-black px-4 py-2 rounded text-xs font-bold">ANALYTICS</button>
         </div>
 
-        <!-- Horizontal Gantt Chart (Ref: image_d20eb7.png) -->
-        <div class="space-y-4">
-            <h2 class="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">Live Gantt Stream</h2>
-            <div id="gantt-chart" class="gantt-container no-scrollbar">
-                <div class="flex items-center justify-center w-full text-slate-600 font-mono text-xs italic">Awaiting calculation...</div>
-            </div>
+        <div class="bg-[#111827] rounded-lg border border-white/5 overflow-hidden mb-12">
+            <div id="process-list" class="min-h-[200px]"></div>
         </div>
 
-        <button onclick="handleExecution()" class="w-full py-5 glass-panel hover:bg-emerald-500/5 border-emerald-500/20 text-emerald-500 font-bold tracking-[0.2em] uppercase transition-all">
-            Execute & Generate Analytics
-        </button>
-    </main>
-
-    <script src="/static/js/script.js"></script>
+        <div id="gantt-chart" class="gantt-container"></div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

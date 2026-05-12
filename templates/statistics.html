@@ -2,52 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Metrics | SJF-P Report</title>
+    <title>Analytics | SJF-P</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body class="p-12">
-    <div class="max-w-6xl mx-auto space-y-10">
-        <header class="flex justify-between items-end border-b border-slate-800 pb-8">
-            <h1 class="text-3xl font-bold text-white">Execution <span class="text-emerald-500">Analytics</span></h1>
-            <a href="/simulator" class="text-xs font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors">New Session</a>
+<body class="p-8">
+    <div class="max-w-4xl mx-auto">
+        <header class="flex justify-between items-center mb-12">
+            <h1 class="text-2xl font-bold text-white">Performance Metrics</h1>
+            <a href="/simulator" class="text-blue-500 hover:underline">Back to Simulator</a>
         </header>
 
-        <div id="stats-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <div id="stats-content" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <!-- Averages injected here -->
+        </div>
+
+        <div class="bg-[#111827] rounded-lg border border-white/5 overflow-hidden">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-white/5 text-slate-500 uppercase text-[10px] font-bold">
+                    <tr><th class="p-4">Process</th><th class="p-4">Wait Time</th><th class="p-4">Turnaround</th></tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
     </div>
-
     <script>
-        const rawData = localStorage.getItem('simulationResults');
-        const grid = document.getElementById('stats-grid');
-
-        // Positive logic fix for SonarQube
-        if (rawData) {
-            const { stats, processes } = JSON.parse(rawData);
-            stats.forEach(s => {
-                const p = processes.find(proc => proc.name === s.name);
-                const card = document.createElement('div');
-                card.className = "glass-panel p-6 space-y-6";
-                card.innerHTML = `
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-mono text-xl font-bold" style="color:${p.color}">${s.name}</h3>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="flex flex-col">
-                            <span class="text-[9px] uppercase text-slate-500 font-bold">Waiting</span>
-                            <span class="text-xl text-white">${s.wt}ms</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-[9px] uppercase text-slate-500 font-bold">Turnaround</span>
-                            <span class="text-xl text-white">${s.tat}ms</span>
-                        </div>
-                    </div>`;
-                grid.appendChild(card);
-            });
-        } else {
-            grid.innerHTML = `
-                <div class="col-span-full py-20 text-center glass-panel">
-                    <p class="text-slate-500 font-mono text-sm uppercase tracking-widest">No active simulation data found.</p>
+        const results = JSON.parse(localStorage.getItem('simulationResults'));
+        if (results) {
+            document.getElementById('stats-content').innerHTML = `
+                <div class="bg-[#111827] p-6 rounded border border-white/5 text-center">
+                    <p class="text-slate-500 text-xs mb-1">AVG WAIT TIME</p>
+                    <p class="text-3xl font-bold text-emerald-400">${results.stats.avg_wt}ms</p>
+                </div>
+                <div class="bg-[#111827] p-6 rounded border border-white/5 text-center">
+                    <p class="text-slate-500 text-xs mb-1">AVG TURNAROUND</p>
+                    <p class="text-3xl font-bold text-blue-400">${results.stats.avg_tat}ms</p>
                 </div>`;
+            
+            const tbody = document.getElementById('table-body');
+            results.stats.individual.forEach(s => {
+                tbody.innerHTML += `<tr class="border-b border-white/5 text-white">
+                    <td class="p-4 font-mono">${s.name}</td>
+                    <td class="p-4">${s.wt}ms</td>
+                    <td class="p-4">${s.tat}ms</td>
+                </tr>`;
+            });
         }
     </script>
 </body>
