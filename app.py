@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 
+# Set static_folder to 'templates' to match your current setup
 app = Flask(__name__, static_folder='templates', static_url_path='/')
 
 def parse_processes(processes):
@@ -7,19 +8,19 @@ def parse_processes(processes):
     for p in processes:
         try:
             bt = float(p['bt'])
+            # Only accept positive burst times
             if bt > 0:
                 parsed.append({'id': p['id'], 'at': float(p['at']), 'bt': bt, 'rem': bt})
         except Exception:
             continue
     return parsed
 
-
 def select_ready_process(procs, time):
+    # Selects process with shortest remaining time that has already arrived
     ready = [p for p in procs if p['at'] <= time and p['rem'] > 0]
     if not ready:
         return None
     return min(ready, key=lambda p: p['rem'])
-
 
 def run_srtf(processes):
     procs = parse_processes(processes)
