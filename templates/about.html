@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SJF Simulator - About</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="flex items-center justify-center min-h-screen p-6">
+    <div class="max-w-4xl text-center">
+        <h1 class="text-3xl font-bold text-emerald-400 mb-8">
+            What is Dynamic Partition - Preemptive Shortest Job First (SJF) CPU Algorithm Scheduling?
+        </h1>
+        
+        <div class="glass-card p-10 text-gray-200 text-lg leading-relaxed mb-10 shadow-2xl">
+            Preemptive Shortest Job First (SJF) scheduling, often called Shortest Remaining Time First (SRTF), 
+            is a dynamic CPU management strategy where the scheduler selects the process with the smallest 
+            remaining execution time to run next. Unlike the non-preemptive version, this algorithm can 
+            interrupt a currently running process if a new task arrives with an even shorter burst time. 
+            In the context of dynamic partitioning, this ensures that short processes do not get stuck behind 
+            long-running tasks, minimizing the Average Waiting Time. However, it requires the system to 
+            constantly monitor and compare remaining times, which increases overhead, and it carries the 
+            risk of starvation for longer processes if a steady stream of short tasks keeps entering the queue.
+        </div>
+
+        <div class="flex justify-center space-x-6">
+            <button type="button" title="Go back" onclick="window.history.back()" class="p-3 rounded-full hover:bg-gray-700 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+            </button>
+            <a href="/simulator" class="bg-emerald-500 hover:bg-emerald-400 text-white px-12 py-3 rounded-lg text-xl font-bold transition">
+                Proceed
+            </a>
+        </div>
+    </div>
+</body>
+</html>

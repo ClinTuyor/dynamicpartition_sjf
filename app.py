@@ -1,62 +1,96 @@
 from flask import Flask, render_template, request, jsonify
 
-app = Flask(__name__, static_folder='templates', static_url_path='/')
+app = Flask(__name__)
 
-def parse_processes(processes):
-    parsed = []
-    for p in processes:
-        try:
-            bt = float(p['bt'])
-            if bt > 0:
-                parsed.append({'id': p['id'], 'at': float(p['at']), 'bt': bt, 'rem': bt})
-        except Exception:
-            continue
-    return parsed
-
-
-def select_ready_process(procs, time):
-    ready = [p for p in procs if p['at'] <= time and p['rem'] > 0]
-    if not ready:
-        return None
-    return min(ready, key=lambda p: p['rem'])
-
-
-def run_srtf(processes):
-    procs = parse_processes(processes)
-    if not procs:
-        return []
-
-    time = min(p['at'] for p in procs)
-    completed, n, last_p, gantt = 0, len(procs), None, []
-
-    while completed < n:
-        current = select_ready_process(procs, time)
-        if current is None:
-            time = round(time + 0.1, 2)
-            continue
-
-        if last_p != current['id']:
-            if gantt:
-                gantt[-1]['end'] = round(time, 2)
-            gantt.append({'id': current['id'], 'start': round(time, 2)})
-            last_p = current['id']
-
-        current['rem'] = round(current['rem'] - 0.1, 2)
-        time = round(time + 0.1, 2)
-        if current['rem'] <= 0:
-            completed += 1
-
-    if gantt:
-        gantt[-1]['end'] = round(time, 2)
-    return gantt
-
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
 
+@app.route('/about', methods=['GET'])
+def about():
+    return render_template('about.html')
+
+@app.route('/simulator', methods=['GET'])
+def simulator():
+    return render_template('simulator.html')
+
+@app.route('/statistics', methods=['GET'])
+def statistics():
+    return render_template('statistics.html')
+
+def select_next_process(processes, time, is_completed, remaining_time, n):
+    """Select the next process to run using SRTF algorithm."""
+    idx = -1
+    min_remaining = float('inf')
+    
+    for i in range(n):
+        if int(processes[i]['at']) <= time and not is_completed[i]:
+            if remaining_time[i] < min_remaining:
+                min_remaining = remaining_time[i]
+                idx = i
+            elif remaining_time[i] == min_remaining:
+                if int(processes[i]['at']) < int(processes[idx]['at']):
+                    idx = i
+    return idx
+
+def run_srtf_algorithm(processes):
+    """Execute Preemptive SJF (SRTF) scheduling algorithm."""
+    time = 0
+    completed = 0
+    n = len(processes)
+    remaining_time = [int(p['bt']) for p in processes]
+    finish_time = [0] * n
+    start_time = [-1] * n
+    is_completed = [False] * n
+    gantt_chart = []
+    
+    while completed != n:
+        idx = select_next_process(processes, time, is_completed, remaining_time, n)
+        
+        if idx != -1:
+            if start_time[idx] == -1:
+                start_time[idx] = time
+            remaining_time[idx] -= 1
+            gantt_chart.append({'id': processes[idx]['name'], 'time': time})
+            if remaining_time[idx] == 0:
+                finish_time[idx] = time + 1
+                is_completed[idx] = True
+                completed += 1
+        else:
+            gantt_chart.append({'id': 'Idle', 'time': time})
+        time += 1
+    
+    return gantt_chart, finish_time, start_time
+
+def calculate_statistics(processes, finish_time, start_time):
+    """Calculate scheduling statistics for each process."""
+    results = []
+    for i in range(len(processes)):
+        at = int(processes[i]['at'])
+        bt = int(processes[i]['bt'])
+        ct = finish_time[i]
+        tat = ct - at
+        wt = tat - bt
+        rt = start_time[i] - at
+        results.append({
+            'name': processes[i]['name'],
+            'at': at, 'bt': bt, 'ct': ct,
+            'tat': tat, 'wt': wt, 'rt': rt
+        })
+    return results
+
 @app.route('/calculate', methods=['POST'])
 def calculate():
-    return jsonify(run_srtf(request.json.get('processes', [])))
+    data = request.get_json()
+    processes = data['processes']
+    
+    if not processes:
+        return jsonify({'error': 'No processes provided'})
+
+    gantt_chart, finish_time, start_time = run_srtf_algorithm(processes)
+    results = calculate_statistics(processes, finish_time, start_time)
+
+    return jsonify({'gantt': gantt_chart, 'stats': results})
 
 if __name__ == '__main__':
     app.run(debug=True)

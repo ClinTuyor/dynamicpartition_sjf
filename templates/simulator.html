@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SJF Simulator - Simulation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="p-10">
+    <header class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-emerald-400">Dynamic Partition - Preemptive SJF Simulator</h1>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
+        <!-- Left Side: Inputs -->
+        <div class="glass-card p-8">
+            <h2 class="text-2xl font-bold text-emerald-400 mb-6 text-center">Process Input</h2>
+            <div class="flex justify-center space-x-4 mb-8">
+                <button onclick="addProcess()" class="bg-emerald-500 hover:bg-emerald-400 px-6 py-2 rounded-lg font-bold">Add Process</button>
+                <button onclick="endAll()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-2 rounded-lg font-bold">End All Processes</button>
+            </div>
+
+            <div class="grid grid-cols-4 gap-4 mb-4 text-emerald-400 font-bold text-sm px-2">
+                <div>Process</div>
+                <div>Arrival Time</div>
+                <div>Burst Time</div>
+                <div></div>
+            </div>
+            
+            <div id="process-list" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                <!-- Rows injected by script.js -->
+            </div>
+
+            <button onclick="window.location.href='/statistics'" class="mt-8 w-full bg-emerald-500 py-4 rounded-xl font-bold text-xl hover:bg-emerald-400 transition">
+                Calculate & View Stats
+            </button>
+        </div>
+
+        <!-- Right Side: Visualization -->
+        <div class="flex flex-col">
+            <div class="glass-card p-8 h-full flex flex-col items-center justify-center">
+                <h3 class="text-gray-400 mb-8 uppercase tracking-widest">CPU / Process Scale</h3>
+                
+                <div id="gantt-chart" class="w-full bg-gray-900 border-2 border-emerald-500 rounded-lg min-h-[300px] flex flex-col overflow-hidden shadow-2xl">
+                    <div class="bg-gray-700 text-xs py-1 text-center text-gray-300">Kernel</div>
+                    <!-- Dynamic Blocks injected here -->
+                </div>
+                <p class="mt-4 text-gray-500 text-sm italic">Gantt Chart (Time-Sequential Execution)</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

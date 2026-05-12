@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SJF Simulator - Statistics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="p-10">
+    <div class="flex justify-between items-start mb-12">
+        <h1 class="text-6xl font-bold text-emerald-400">Statistics</h1>
+        <div class="text-gray-400 text-sm glass-card p-6">
+            <h3 class="font-bold text-emerald-400 mb-2">Formulas:</h3>
+            <ol class="list-decimal ml-4 space-y-1">
+                <li>Completion Time (CT): Final execution marker</li>
+                <li>Turnaround Time: TAT = CT - AT</li>
+                <li>Waiting Time: WT = TAT - BT</li>
+                <li>Response Time: RT = First Scheduled - AT</li>
+            </ol>
+        </div>
+    </div>
+
+    <div id="stats-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Cards injected by script.js -->
+    </div>
+
+    <div class="fixed bottom-10 right-10">
+        <button onclick="window.location.href='/'" class="bg-emerald-500 hover:bg-emerald-400 text-white px-10 py-4 rounded-xl font-bold text-lg shadow-2xl">
+            Quit Simulator
+        </button>
+    </div>
+
+    <script>
+        window.onload = () => {
+            const data = JSON.parse(localStorage.getItem('simulationResults')) || [];
+            const container = document.getElementById('stats-container');
+
+            data.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-6 cursor-pointer hover:border-emerald-500 transition-all";
+                card.onclick = () => {
+                    const detail = card.querySelector('.detail');
+                    detail.classList.toggle('hidden');
+                };
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-3xl font-bold text-emerald-400">${p.name}</h2>
+                        <span class="text-gray-500 text-xs">Click to see math</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div class="bg-gray-800 p-2 rounded">CT: ${p.ct}</div>
+                        <div class="bg-gray-800 p-2 rounded">TAT: ${p.tat}</div>
+                        <div class="bg-gray-800 p-2 rounded">WT: ${p.wt}</div>
+                        <div class="bg-gray-800 p-2 rounded">RT: ${p.rt}</div>
+                    </div>
+                    <div class="detail hidden mt-6 pt-4 border-t border-gray-700 text-sm text-emerald-200">
+                        <p>TAT: ${p.ct} (CT) - ${p.at} (AT) = ${p.tat}</p>
+                        <p>WT: ${p.tat} (TAT) - ${p.bt} (BT) = ${p.wt}</p>
+                        <p>RT: ${p.rt + p.at} (Start) - ${p.at} (AT) = ${p.rt}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        };
+    </script>
+</body>
+</html>
