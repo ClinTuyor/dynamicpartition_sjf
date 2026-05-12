@@ -1,5 +1,6 @@
 let counter = 1;
-const colors = ['#FF5F5F', '#FF6BCB', '#4BC0FF', '#FFB84D', '#10B981', '#9B59B6'];
+// Industrial/Cyberpunk Palette
+const colors = ['#0ea5e9', '#6366f1', '#8b5cf6', '#d946ef', '#f43f5e', '#10b981'];
 
 function addProcess() {
     const list = document.getElementById('process-list');
@@ -7,22 +8,17 @@ function addProcess() {
     const color = colors[(counter - 2) % colors.length];
     
     const div = document.createElement('div');
-    div.className = "grid grid-cols-[80px_1fr_1fr_50px] gap-3 items-center";
+    div.className = "grid grid-cols-[80px_1fr_1fr_60px] gap-4 items-center p-4 hover:bg-white/[0.02] transition-colors group";
     div.innerHTML = `
-        <div class="h-10 rounded-lg flex items-center justify-center text-white font-extrabold text-lg shadow-sm" style="background-color: ${color}">${name}</div>
-        <input type="number" placeholder="0" class="at-input input-field" min="0">
-        <input type="number" placeholder="0" class="bt-input input-field" min="1">
-        <button onclick="removeThis(this)" class="text-red-500 hover:scale-110 transition-transform flex justify-center">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-            </svg>
+        <div class="text-xs font-mono font-bold" style="color: ${color}">${name}</div>
+        <input type="number" placeholder="0" class="at-input input-field px-4 py-2 rounded-lg text-sm">
+        <input type="number" placeholder="0" class="bt-input input-field px-4 py-2 rounded-lg text-sm">
+        <button onclick="removeThis(this)" class="text-slate-600 hover:text-red-400 transition-colors flex justify-end">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
     `;
     list.appendChild(div);
-
-    div.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', updateUI);
-    });
+    div.querySelectorAll('input').forEach(i => i.addEventListener('input', updateUI));
 }
 
 function removeThis(btn) {
@@ -42,7 +38,7 @@ async function updateUI() {
         name: row.querySelector('div').innerText,
         at: row.querySelector('.at-input').value,
         bt: row.querySelector('.bt-input').value,
-        color: row.querySelector('div').style.backgroundColor
+        color: row.querySelector('div').style.color
     })).filter(p => p.at !== "" && p.bt !== "");
 
     if (processes.length === 0) {
@@ -57,12 +53,7 @@ async function updateUI() {
     });
     
     const data = await response.json();
-    
-    localStorage.setItem('simulationResults', JSON.stringify({
-        stats: data.stats, 
-        processes: processes
-    }));
-
+    localStorage.setItem('simulationResults', JSON.stringify({ stats: data.stats, processes }));
     renderScale(data.gantt, processes);
 }
 
@@ -70,23 +61,21 @@ function renderScale(gantt, processes) {
     const scale = document.getElementById('cpu-scale');
     scale.innerHTML = '';
     
-    // We reverse the array so the LATEST time is handled first in the DOM,
-    // but because the container is 'flex-col-reverse' or 'justify-end',
-    // it will visually stack from the bottom up.
+    // Reverse for "Water Bottle" fill effect
     const visualGantt = [...gantt].reverse();
     
     visualGantt.forEach((step, index) => {
         const p = processes.find(proc => proc.name === step.id);
         const block = document.createElement('div');
+        block.className = "w-full border-t border-slate-950 shrink-0 animate-fill flex items-center px-4 relative group";
+        block.style.backgroundColor = p ? p.color : '#1e293b';
+        block.style.height = "24px";
+        block.style.animationDelay = `${index * 0.02}s`;
         
-        // CSS Animation for 'filling' effect
-        block.className = "w-full flex items-center justify-center text-black font-bold text-xs border-b border-white/10 shrink-0 animate-fill-up";
-        
-        block.style.backgroundColor = p ? p.color : '#e9ecef';
-        block.style.height = "30px"; 
-        block.style.animationDelay = `${index * 0.05}s`; // Staggered appearance
-        block.innerText = step.id;
-        
+        block.innerHTML = `
+            <span class="text-[8px] font-mono font-bold text-white/40 uppercase">${step.id}</span>
+            <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        `;
         scale.appendChild(block);
     });
 }

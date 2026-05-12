@@ -2,19 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dynamic Partition - Preemptive SJF Simulator</title>
+    <title>SJF Preemptive | Systems Logic</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
-    <style>body { font-family: 'Nunito', sans-serif; }</style>
 </head>
-<body class="bg-[#1a2426] flex flex-col items-center justify-center min-h-screen relative overflow-hidden">
-    <div class="text-center z-10 mb-16">
-        <h1 class="text-7xl font-extrabold text-[#10b981] mb-4">Dynamic Partition</h1>
-        <h2 class="text-5xl font-bold text-[#10b981] mb-10">Preemptive Shortest Job First (SJF)</h2>
-        <p class="text-xl text-gray-300">CPU Algorithm Scheduling Simulator</p>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="text-center space-y-8 max-w-2xl px-6">
+        <header class="space-y-3">
+            <div class="inline-block px-3 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/5">
+                <span class="text-[10px] tracking-[0.4em] uppercase text-emerald-500 font-bold">Node.Active // v4.0</span>
+            </div>
+            <h1 class="text-6xl font-light tracking-tighter">SJF <span class="font-bold text-white">Preemptive</span></h1>
+            <p class="text-slate-400 font-light text-lg max-w-md mx-auto">A high-fidelity simulation environment for Shortest Remaining Time First scheduling.</p>
+        </header>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+            <a href="/simulator" class="bg-emerald-600 hover:bg-emerald-500 text-white px-10 py-4 rounded-xl font-bold transition-all shadow-xl shadow-emerald-900/20">
+                Launch Environment
+            </a>
+            <a href="/about" class="border border-slate-800 hover:bg-slate-900 text-slate-400 px-10 py-4 rounded-xl font-bold transition-all">
+                System Docs
+            </a>
+        </div>
     </div>
-    <a href="/about" class="z-10 bg-[#10b981] text-white px-12 py-3 rounded-full text-xl font-bold hover:bg-[#0ea672] transition-all shadow-xl">Start</a>
-    <div class="wave-container"><div class="wave"></div></div>
 </body>
 </html>
