@@ -2,26 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SJF Simulator - Home</title>
+    <title>Dynamic Partition Preemptive SJF Simulator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body class="flex items-center justify-center min-h-screen relative overflow-hidden">
+<body class="flex flex-col items-center justify-between min-h-screen py-32">
     <div class="text-center z-10">
-        <h1 class="text-5xl font-bold text-emerald-400 mb-2">Dynamic Partition</h1>
-        <h2 class="text-4xl font-bold text-emerald-400 mb-6">Preemptive Shortest Job First (SJF)</h2>
-        <p class="text-gray-300 text-xl mb-12">CPU Algorithm Scheduling Simulator</p>
-        
-        <a href="/about" class="bg-emerald-500 hover:bg-emerald-400 text-white px-16 py-4 rounded-full text-2xl font-semibold transition-all duration-300 shadow-lg">
-            Start
-        </a>
+        <h1 class="text-6xl font-bold text-[#10b981] mb-6">Dynamic Partition</h1>
+        <h2 class="text-5xl font-bold text-[#10b981] mb-12">Preemptive Shortest Job First (SJF)</h2>
+        <p class="text-2xl text-gray-300">CPU Algorithm Scheduling Simulator</p>
     </div>
-
-    <!-- Wave Animation -->
-    <div class="wave-container">
-        <div class="wave opacity-20"></div>
-        <div class="wave opacity-10 wave-delay"></div>
-    </div>
+    <a href="/about" class="z-10 bg-[#10b981] text-white px-20 py-5 rounded-full text-3xl font-bold hover:scale-105 transition-transform shadow-2xl">Start</a>
+    <div class="wave-container"><div class="wave"></div></div>
 </body>
 </html>
