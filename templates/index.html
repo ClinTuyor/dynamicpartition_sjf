@@ -2,16 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SJF-P | Home</title>
+    <title>Shortest Job First.</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="p-8">
-    </nav>
-    <div class="max-w-5xl mx-auto text-center py-24">
-        <h1 class="text-6xl font-black text-white mb-6 tracking-tighter">Shortest Job First.</h1>
-        <p class="text-slate-400 text-xl mb-12 max-w-2xl mx-auto">A professional-grade preemptive scheduling simulator designed for accuracy and visual clarity.</p>
-        <a href="/simulator" class="bg-blue-600 text-white px-10 py-4 rounded-full font-bold hover:bg-blue-500 transition shadow-lg shadow-blue-900/20">Enter Simulator</a>
-    </div>
+<body class="bg-[#0f172a] text-slate-300">
+    <main class="hero-container">
+        <div class="hero-content">
+            <h1 class="hero-title">Shortest Job First.</h1>
+            <p class="hero-tagline">
+                A professional-grade preemptive scheduling simulator designed for accuracy and visual clarity.
+            </p>
+            
+            <!-- Button Group -->
+            <div class="hero-actions">
+                <a href="/simulator" class="hero-button primary">Enter Simulator</a>
+                <a href="/about" class="hero-button secondary">About Page</a>
+            </div>
+        </div>
+    </main>
 </body>
 </html> 

@@ -2,19 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SJF-P | Simulator</title>
+    <title>Dynamic SJF-P Simulator</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="p-8">
-    <div class="max-w-5xl mx-auto">
+<body class="p-8 bg-[#0f172a] text-slate-300">
         <div class="flex justify-between items-center mb-10">
             <div class="flex gap-4">
                 <button onclick="addProcess()" class="bg-blue-600 text-white px-6 py-2 rounded font-bold text-xs">ADD PROCESS</button>
                 <button onclick="startSimulation()" class="bg-emerald-600 text-white px-6 py-2 rounded font-bold text-xs">START PROCESS</button>
                 <button onclick="endAll()" class="bg-slate-800 text-white px-6 py-2 rounded font-bold text-xs">CLEAR BUFFER</button>
             </div>
-            <button onclick="handleExecution()" class="bg-white text-black px-6 py-2 rounded font-bold text-xs">VIEW ANALYTICS</button>
+            <div class="flex gap-3 items-center">
+                    <a href="/" class="bg-slate-800 hover:bg-slate-700 text-white p-2 rounded border border-white/5 transition-colors" title="Go Home">
+                        <i data-lucide="home" class="w-4 h-4"></i>
+                    </a>                    
+                <button onclick="handleExecution()" class="bg-white text-black px-6 py-2 rounded font-bold text-xs">
+                    VIEW ANALYTICS
+                </button>
+            </div>
         </div>
 
         <div class="bg-[#111827] rounded-xl border border-white/5 overflow-hidden mb-12 shadow-2xl">

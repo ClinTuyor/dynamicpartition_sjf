@@ -1,5 +1,77 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+.hero-container {
+    display: flex;
+    justify-content: center; /* Horizontal center */
+    align-items: center;     /* Vertical center */
+    min-height: 100vh;       /* Full viewport height */
+    text-align: center;
+    padding: 2rem;
+}
+
+/* Large, Bold Title */
+.hero-title {
+    font-size: 8rem; /* Massive impact */
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    color: white;
+    margin-bottom: 1px;
+}
+
+/* Tagline styling */
+.hero-tagline {
+    font-size: 1.25rem;
+    color: #94a3b8; /* Slate-400 */
+    max-width: 1000px;
+    margin: 0 auto;
+    line-height: 1;
+}
+
+/* --- Added: Container for the side-by-side buttons --- */
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;      /* Space between the two buttons */
+    margin-top: 4rem; /* The "Big Space" between tagline and buttons */
+}
+
+/* Base button styles (Shared) */
+.hero-button {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+/* Primary Button (Enter Simulator) */
+.hero-button.primary {
+    background-color: #2563eb; /* Blue-600 */
+    color: white;
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+}
+
+.hero-button.primary:hover {
+    background-color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.4);
+}
+
+/* Secondary Button (About Page) */
+.hero-button.secondary {
+    background-color: transparent;
+    color: #cbd5e1; /* slate-300 */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hero-button.secondary:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
 body {
     background-color: #0b0f1a;
     color: #cbd5e1;

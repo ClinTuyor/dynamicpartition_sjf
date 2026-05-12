@@ -8,12 +8,20 @@ function addProcess(atVal = "", btVal = "") {
     const color = colors[(counter - 2) % colors.length];
     const div = document.createElement('div');
     div.className = "process-row grid grid-cols-[100px_1fr_1fr_60px] gap-4 items-center p-4 border-b border-white/5";
+    
+    // Updated button to use the 'trash-2' icon
     div.innerHTML = `
         <div class="proc-id text-xs font-mono font-bold" style="color:${color}">${name}</div>
         <input type="number" class="at-input input-field" placeholder="Arrival" value="${atVal}">
         <input type="number" class="bt-input input-field" placeholder="Burst" value="${btVal}">
-        <button onclick="this.closest('div').remove(); saveState();" class="text-slate-600 hover:text-red-400 text-xl text-right">×</button>`;
+        <button onclick="this.closest('div').remove(); saveState();" 
+                class="flex justify-end text-slate-500 hover:text-red-400 transition-colors">
+            <i data-lucide="trash-2" class="w-5 h-5"></i>
+        </button>`;
+    
     list.appendChild(div);
+    // Refresh Lucide to catch the new icon
+    lucide.createIcons();
 }
 
 function saveState() {
@@ -108,31 +116,34 @@ function renderCharts(data, processes) {
     });
 
     // 2. Project Timeline Chart (Chart 2)
-    timelineRows.innerHTML = '';
-    timeScale.innerHTML = '';
-    processes.forEach(p => {
+timelineRows.innerHTML = '';
+timeScale.innerHTML = '';
+
+processes.forEach(p => {
+    // Find the statistics for this specific process
     const pStat = data.stats.individual.find(s => s.name === p.name);
-    if (pStat) {
-        const finishTime = p.at + pStat.tat;
-        
-        // Ensure start and width are relative to the SAME totalTime used for Chart 1
-        let startPct = (p.at / totalTime) * 100;
-        let widthPct = ((finishTime - p.at) / totalTime) * 100;
+    
+    // Fallback: If pStat doesn't exist (process didn't finish), 
+    // we use totalTime as a placeholder finish point.
+    const finishTime = pStat ? (p.at + pStat.tat) : totalTime;
+    
+    // Calculate positions relative to the total simulation time
+    let startPct = (p.at / totalTime) * 100;
+    let widthPct = ((finishTime - p.at) / totalTime) * 100;
 
-        // Safety check: Clip the values if they exceed 100% due to float rounding
-        if (startPct + widthPct > 100) {
-            widthPct = 100 - startPct;
-        }
+    // Constrain the bar within the 0-100% bounds to prevent overflow
+    if (startPct < 0) startPct = 0;
+    if (startPct + widthPct > 100) widthPct = 100 - startPct;
+    if (widthPct < 0) widthPct = 0;
 
-        const row = document.createElement('div');
-        row.className = "timeline-row";
-        row.innerHTML = `
-            <div class="text-[10px] font-mono font-bold" style="color:${p.color}">${p.name}</div>
-            <div class="timeline-bar-container">
-                <div class="timeline-bar" style="left:${startPct}%; width:${widthPct}%; background-color:${p.color}"></div>
-            </div>`;
-        timelineRows.appendChild(row);
-    }
+    const row = document.createElement('div');
+    row.className = "timeline-row";
+    row.innerHTML = `
+        <div class="text-[10px] font-mono font-bold" style="color:${p.color}">${p.name}</div>
+        <div class="timeline-bar-container">
+            <div class="timeline-bar" style="left:${startPct}%; width:${widthPct}%; background-color:${p.color}"></div>
+        </div>`;
+    timelineRows.appendChild(row);
 });
 
     for (let i = 0; i <= totalTime; i += Math.max(1, Math.ceil(totalTime / 10))) {
@@ -169,8 +180,9 @@ function handleExecution() {
     if (localStorage.getItem('simulationResults')) globalThis.location.href = '/statistics';
 }
 
-document.addEventListener('input', (e) => { 
-    if (e.target.classList.contains('input-field')) saveState(); 
+document.addEventListener('DOMContentLoaded', () => {
+    restoreState();
+    lucide.createIcons();
 });
 
 document.addEventListener('DOMContentLoaded', restoreState);
