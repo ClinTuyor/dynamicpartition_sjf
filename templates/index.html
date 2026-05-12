@@ -2,84 +2,122 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>SRTF Scheduler</title>
+    <title>SJF Scheduler</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .chart-container {
-            width: 80%;
-            margin-top: 50px;
-        }
-    </style>
 </head>
 <body>
-    <h2>Preemptive SJF (SRTF)</h2>
-    <table id="processTable">
-        <tr><th>Process ID</th><th>Arrival Time</th><th>Burst Time</th></tr>
-        <tr>
-            <td><input type="text" class="pid" value="P1" aria-label="Process ID"></td>
-            <td><input type="number" step="0.1" class="at" value="0" aria-label="Arrival Time"></td>
-            <td><input type="number" step="0.1" class="bt" value="5" aria-label="Burst Time"></td>
-        </tr>
-    </table>
-    <button onclick="addRow()">Add Process</button>
-    <button onclick="runSimulation()">Run Simulation</button>
+    <div class="container">
+        <div>
+            <h2>Process Input</h2>
+            <button class="btn-add" onclick="addRow()">+ Add Process</button>
+            <div id="list">
+                </div>
+        </div>
 
-    <div class="chart-container">
-        <canvas id="ganttChart"></canvas>
+        <div>
+            <h2>Gantt Chart</h2>
+            <div id="chart-box">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
     </div>
 
     <script>
         let chart;
+        let processCounter = 1;
+
+        document.addEventListener('input', (e) => { 
+            if(e.target.tagName === 'INPUT') update(); 
+        });
+
         function addRow() {
-            let table = document.getElementById("processTable");
-            let row = table.insertRow(-1);
-            row.innerHTML = `<td><input type="text" class="pid" aria-label="Process ID"></td>
-                             <td><input type="number" step="0.1" class="at" aria-label="Arrival Time"></td>
-                             <td><input type="number" step="0.1" class="bt" aria-label="Burst Time"></td>`;
+            const container = document.getElementById('list');
+            const row = document.createElement('div');
+            row.className = 'input-row';
+            
+            const currentID = `P${processCounter}`;
+            processCounter++;
+
+            row.innerHTML = `
+                <div class="field">
+                    <label>Process</label>
+                    <input type="text" class="pid" value="${currentID}" readonly>
+                </div>
+                <div class="field">
+                    <label>Arrival</label>
+                    <input type="number" step="0.1" class="at" value="0">
+                </div>
+                <div class="field">
+                    <label>Burst</label>
+                    <input type="number" step="0.1" class="bt" value="1">
+                </div>
+                <button class="btn-trash" title="Delete" onclick="removeRow(this)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                </button>
+            `;
+            container.appendChild(row);
+            update();
         }
 
-        async function runSimulation() {
-            const pids = document.querySelectorAll('.pid');
-            const ats = document.querySelectorAll('.at');
-            const bts = document.querySelectorAll('.bt');
+        function removeRow(btn) {
+            btn.parentElement.remove();
+            const container = document.getElementById('list');
             
-            let processes = [];
-            pids.forEach((p, i) => {
-                processes.push({id: p.value, at: Number.parseFloat(ats[i].value), bt: Number.parseFloat(bts[i].value)});
-            });
+            // RESET LOGIC: If no rows left, reset the counter to 1
+            if (container.children.length === 0) {
+                processCounter = 1;
+                if(chart) chart.destroy();
+            } else {
+                update();
+            }
+        }
 
-            const response = await fetch('/solve', {
+        async function update() {
+            const rows = document.querySelectorAll('.input-row');
+            if (rows.length === 0) return;
+
+            const procs = Array.from(rows).map(r => ({
+                id: r.querySelector('.pid').value,
+                at: r.querySelector('.at').value,
+                bt: r.querySelector('.bt').value
+            }));
+
+            const res = await fetch('/calculate', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({processes})
+                body: JSON.stringify({processes: procs})
             });
-            const data = await response.json();
-            drawGantt(data);
+            const data = await res.json();
+            draw(data);
         }
 
-        function drawGantt(data) {
-            const ctx = document.getElementById('ganttChart').getContext('2d');
+        function draw(data) {
+            const ctx = document.getElementById('myChart').getContext('2d');
             if(chart) chart.destroy();
-            
             chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    datasets: data.map(item => ({
-                        label: item.id,
-                        data: [{x: [item.start, item.end], y: 'Timeline'}],
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)'
+                    datasets: data.map((d, i) => ({
+                        label: d.id,
+                        data: [{x: [d.start, d.end], y: 'Timeline'}],
+                        backgroundColor: `hsla(${230 + (i * 25)}, 70%, 60%, 0.8)`,
+                        borderSkipped: false, borderRadius: 4
                     }))
                 },
                 options: {
                     indexAxis: 'y',
-                    scales: { x: { type: 'linear', position: 'bottom' } },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.x[0]} - ${ctx.raw.x[1]}` } }
-                    }
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { type: 'linear', title: {display: true, text: 'Time Units'} },
+                        y: { stacked: true, display: false }
+                    },
+                    plugins: { legend: { position: 'bottom' } }
                 }
             });
         }
+
+        window.onload = addRow;
     </script>
 </body>
 </html>

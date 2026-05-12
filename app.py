@@ -1,61 +1,62 @@
 from flask import Flask, render_template, request, jsonify
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='templates', static_url_path='/')
 
-def find_next_process(arrival_time, remaining_time, time):
-    idx = -1
-    min_remaining = float('inf')
-    for i, (at, rem) in enumerate(zip(arrival_time, remaining_time)):
-        if at <= time and rem > 0 and rem < min_remaining:
-            min_remaining = rem
-            idx = i
-    return idx
+def parse_processes(processes):
+    parsed = []
+    for p in processes:
+        try:
+            bt = float(p['bt'])
+            if bt > 0:
+                parsed.append({'id': p['id'], 'at': float(p['at']), 'bt': bt, 'rem': bt})
+        except Exception:
+            continue
+    return parsed
 
 
-def calculate_srtf(processes):
-    # processes: list of dicts {'id': 'P1', 'at': 0.0, 'bt': 5.0}
-    n = len(processes)
-    remaining_time = [p['bt'] for p in processes]
-    arrival_time = [p['at'] for p in processes]
+def select_ready_process(procs, time):
+    ready = [p for p in procs if p['at'] <= time and p['rem'] > 0]
+    if not ready:
+        return None
+    return min(ready, key=lambda p: p['rem'])
 
-    time = 0.0
-    completed = 0
-    last_process = None
-    gantt_data = []  # List of {process, start, end}
+
+def run_srtf(processes):
+    procs = parse_processes(processes)
+    if not procs:
+        return []
+
+    time = min(p['at'] for p in procs)
+    completed, n, last_p, gantt = 0, len(procs), None, []
 
     while completed < n:
-        idx = find_next_process(arrival_time, remaining_time, time)
-        if idx == -1:
-            time += 0.1
+        current = select_ready_process(procs, time)
+        if current is None:
+            time = round(time + 0.1, 2)
             continue
 
-        if last_process != processes[idx]['id']:
-            if gantt_data:
-                gantt_data[-1]['end'] = round(time, 2)
-            gantt_data.append({'id': processes[idx]['id'], 'start': round(time, 2)})
-            last_process = processes[idx]['id']
+        if last_p != current['id']:
+            if gantt:
+                gantt[-1]['end'] = round(time, 2)
+            gantt.append({'id': current['id'], 'start': round(time, 2)})
+            last_p = current['id']
 
-        remaining_time[idx] -= 0.1
-        time += 0.1
-
-        if remaining_time[idx] <= 0:
-            remaining_time[idx] = 0
+        current['rem'] = round(current['rem'] - 0.1, 2)
+        time = round(time + 0.1, 2)
+        if current['rem'] <= 0:
             completed += 1
 
-    if gantt_data:
-        gantt_data[-1]['end'] = round(time, 2)
-
-    return gantt_data
+    if gantt:
+        gantt[-1]['end'] = round(time, 2)
+    return gantt
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/solve', methods=['POST'])
-def solve():
-    data = request.json
-    result = calculate_srtf(data['processes'])
-    return jsonify(result)
+@app.route('/calculate', methods=['POST'])
+def calculate():
+    return jsonify(run_srtf(request.json.get('processes', [])))
 
 if __name__ == '__main__':
     app.run(debug=True)
