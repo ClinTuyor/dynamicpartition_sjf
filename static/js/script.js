@@ -12,8 +12,8 @@ function addProcess(atVal = "", btVal = "") {
     // Updated button to use the 'trash-2' icon
     div.innerHTML = `
         <div class="proc-id text-xs font-mono font-bold" style="color:${color}">${name}</div>
-        <input type="number" class="at-input input-field" placeholder="Arrival" value="${atVal}">
-        <input type="number" class="bt-input input-field" placeholder="Burst" value="${btVal}">
+        <input type="number" class="at-input input-field" placeholder="0" value="${atVal}">
+        <input type="number" class="bt-input input-field" placeholder="0" value="${btVal}">
         <button onclick="this.closest('div').remove(); saveState();" 
                 class="flex justify-end text-slate-500 hover:text-red-400 transition-colors">
             <i data-lucide="trash-2" class="w-5 h-5"></i>
