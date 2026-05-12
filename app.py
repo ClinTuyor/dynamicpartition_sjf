@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
+# Logic helper for Preemptive SJF
 def get_next_process(at, rt, current_time):
     idx = -1
     min_rt = float('inf')
@@ -12,7 +13,22 @@ def get_next_process(at, rt, current_time):
                 idx = i
     return idx
 
-# Updated /calculate route logic
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/simulator')
+def simulator():
+    return render_template('simulator.html')
+
+@app.route('/statistics')
+def statistics():
+    return render_template('statistics.html')
+
 @app.route('/calculate', methods=['POST'])
 def calculate():
     data = request.get_json()
@@ -54,7 +70,11 @@ def calculate():
             'bt': bt[i],
             'ct': ct[i],
             'tat': tat,
-            'wt': wt
+            'wt': wt,
+            'rt': start_times[i] - at[i]
         })
 
     return jsonify({'gantt': gantt, 'stats': stats})
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)

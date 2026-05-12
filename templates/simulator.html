@@ -2,63 +2,74 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dynamic Partition - Preemptive SJF Simulator</title>
+    <title>Dynamic Partition SJF Simulator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Nunito', sans-serif; background-color: white; color: black; }
-        .at-input, .bt-input {
-            background-color: #f3f4f6;
-            transition: all 0.2s;
+        body { font-family: 'Nunito', sans-serif; background-color: white; }
+        .input-field {
+            background-color: #f1f3f5;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            font-weight: 700;
+            width: 100%;
         }
-        .at-input:focus, .bt-input:focus {
-            background-color: #e5e7eb;
-            outline: 2px solid #10b981;
+        .input-field::placeholder { color: #adb5bd; }
+        /* Remove arrows from number inputs */
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+            -webkit-appearance: none; margin: 0;
         }
     </style>
 </head>
-<body class="p-10">
-    <header class="mb-20">
-        <h1 class="text-center text-4xl font-extrabold text-[#10b981]">Dynamic Partition - Preemptive SJF Simulator</h1>
-    </header>
-    
-    <div class="flex justify-between items-start max-w-[1400px] mx-auto gap-16">
-        <!-- LEFT COLUMN: PROCESS INPUTS -->
-        <div class="flex-1">
-            <h2 class="text-[#10b981] text-3xl font-bold mb-8 text-center uppercase tracking-wide">Process Input</h2>
+<body class="p-12">
+    <!-- Main Title -->
+    <h1 class="text-center text-5xl font-extrabold text-[#10b981] mb-16 uppercase tracking-tight">
+        Dynamic Partition - Preemptive SJF Simulator
+    </h1>
+
+    <div class="max-w-[1400px] mx-auto flex flex-col lg:flex-row gap-16 justify-center">
+        
+        <!-- Left Side: Inputs -->
+        <div class="flex-1 max-w-3xl">
+            <h2 class="text-[#10b981] text-3xl font-extrabold mb-10 text-center uppercase">Process Input</h2>
             
-            <div class="flex gap-4 mb-10">
-                <button onclick="addProcess()" class="bg-[#10b981] text-white py-3 rounded-lg font-bold text-lg flex-1 shadow-md hover:bg-[#0ea672]">Add Process</button>
-                <button onclick="endAll()" class="bg-[#10b981] text-white py-3 rounded-lg font-bold text-lg flex-1 shadow-md hover:bg-[#0ea672]">End All Processes</button>
+            <!-- Top Buttons -->
+            <div class="flex gap-6 mb-12">
+                <button onclick="addProcess()" class="bg-[#10b981] text-white py-4 rounded-xl font-bold text-xl flex-1 shadow-md hover:brightness-95">Add Process</button>
+                <button onclick="endAll()" class="bg-[#10b981] text-white py-4 rounded-xl font-bold text-xl flex-1 shadow-md hover:brightness-95">End All Processes</button>
             </div>
 
-            <div class="grid grid-cols-4 gap-4 mb-4 px-2 text-[#10b981] font-extrabold text-sm uppercase">
-                <div class="text-center">Process</div>
-                <div class="text-center">Arrival Time</div>
-                <div class="text-center">Burst Time</div>
+            <!-- Table Headers -->
+            <div class="grid grid-cols-[100px_1fr_1fr_60px] gap-4 mb-6 px-2">
+                <div class="text-[#10b981] font-extrabold text-center uppercase text-sm">Process</div>
+                <div class="text-[#10b981] font-extrabold text-center uppercase text-sm">Arrival Time</div>
+                <div class="text-[#10b981] font-extrabold text-center uppercase text-sm">Burst Time</div>
                 <div></div>
             </div>
 
-            <div id="process-list" class="space-y-4">
-                <!-- JavaScript populates rows here -->
+            <!-- Process Container -->
+            <div id="process-list" class="space-y-6">
+                <!-- Rows injected by JS -->
             </div>
-            
-            <button onclick="window.location.href='/statistics'" class="mt-12 w-full bg-[#10b981] text-white py-4 rounded-xl text-2xl font-bold shadow-xl hover:bg-[#0ea672] transition-all">
+
+            <!-- Full Width Calculate Button -->
+            <button onclick="window.location.href='/statistics'" class="mt-16 w-full bg-[#10b981] text-white py-5 rounded-2xl text-3xl font-extrabold shadow-lg hover:brightness-95 transition-all">
                 Calculate Stats
             </button>
         </div>
 
-        <!-- RIGHT COLUMN: SCALE (3.png Replication) -->
-        <div class="w-[380px] flex flex-col items-center">
-            <div class="w-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-sm border border-gray-100 overflow-hidden min-h-[600px] flex flex-col">
-                <div class="bg-gray-400 py-1.5 text-center text-white text-[10px] font-bold uppercase tracking-widest">Kernel</div>
+        <!-- Right Side: CPU Scale -->
+        <div class="w-full lg:w-[400px] flex flex-col items-center">
+            <div class="w-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 min-h-[650px] flex flex-col rounded-sm overflow-hidden">
+                <div class="bg-[#adb5bd] py-2 text-center text-white text-xs font-bold uppercase tracking-tighter">Kernel</div>
                 <div id="cpu-scale" class="flex-grow flex flex-col">
-                    <!-- Dynamic Partition blocks populate here -->
+                    <!-- Gantt Blocks injected here -->
                 </div>
             </div>
-            <p class="mt-4 text-gray-400 font-bold text-sm uppercase tracking-widest">CPU Scale</p>
+            <p class="mt-6 text-[#adb5bd] font-extrabold text-sm uppercase tracking-widest">CPU Scale</p>
         </div>
+
     </div>
 
     <script src="/static/js/script.js"></script>
