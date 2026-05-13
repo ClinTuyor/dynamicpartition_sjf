@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Shortest Job First.</title>
+    <title>About Dynamic SJF-P.</title>
+    <!-- Lucide Icons Library -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -17,19 +18,21 @@
             <div class="flex gap-8">
                 <a href="/about" class="text-sm font-bold tracking-widest text-white border-b-2 border-blue-600 pb-1 uppercase">About Dynamic SJF-P</a>
             </div>
-            <p href="/" class="p-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg border border-white/10 transition-all">
+            
+            <!-- FIXED: Changed <p> to <a> and added flex centering for the icon -->
+            <a href="/" class="p-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg border border-white/10 transition-all flex items-center justify-center" title="Go Home">
                 <i data-lucide="home" class="w-5 h-5"></i>
-            </p>
+            </a>
         </div>
 
         <!-- Content Area -->
         <div class="max-w-5xl w-full text-center">
             <h1 class="text-6xl font-black text-white mb-8 tracking-tighter">
-                Understanding Dynamic Preemtive Shortest Job First.
+                Understanding Dynamic Preemptive Shortest Job First.
             </h1>
             
-            <div class="bg-[#111827]/50 backdrop-blur-sm p-10 rounded-2xl border border-white/5 shadow-2xl">
-                <!-- Updated Technical Description -->
+            <div class="bg-[#111827]/50 backdrop-blur-sm p-10 rounded-2xl border border-white/5 shadow-2xl text-left">
+                <!-- Technical Description -->
                 <p class="text-xl leading-relaxed text-slate-300 mb-8">
                     Preemptive Shortest Job First (SJF) scheduling, often called 
                     <span class="text-blue-400 font-mono">Shortest Remaining Time First (SRTF)</span>, 
@@ -71,6 +74,11 @@
         </div>
     </main>
 
-    <script>lucide.createIcons();</script>
+    <!-- FIXED: Initialization script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+        });
+    </script>
 </body>
 </html>

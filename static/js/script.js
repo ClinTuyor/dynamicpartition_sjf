@@ -95,25 +95,35 @@ function renderCharts(data, processes) {
     });
 
     // 1. CPU Execution Chart (Chart 1)
-    execChart.innerHTML = '';
-    let compressed = [];
-    let current = { id: data.gantt[0].id, duration: 1 };
-    for (let i = 1; i < data.gantt.length; i++) {
-        if (data.gantt[i].id === current.id) current.duration++;
-        else { compressed.push(current); current = { id: data.gantt[i].id, duration: 1 }; }
-    }
-    compressed.push(current);
+execChart.innerHTML = '';
+let compressed = [];
 
-    const totalTime = data.gantt.length;
-    compressed.forEach(block => {
-        const p = processes.find(proc => proc.name === block.id);
-        const div = document.createElement('div');
-        div.className = "gantt-block";
-        div.style.backgroundColor = p ? p.color : '#334155';
-        div.style.width = `${(block.duration / totalTime) * 100}%`;
-        div.innerText = block.id;
-        execChart.appendChild(div);
-    });
+// Safety check: ensure data.gantt actually has content
+if (!data.gantt || data.gantt.length === 0) return;
+
+let current = { id: data.gantt[0].id, duration: 1 };
+for (let i = 1; i < data.gantt.length; i++) {
+    if (data.gantt[i].id === current.id) current.duration++;
+    else { 
+        compressed.push(current); 
+        current = { id: data.gantt[i].id, duration: 1 }; 
+    }
+}
+compressed.push(current);
+
+const totalTime = data.gantt.length;
+compressed.forEach(block => {
+    // FIX: Match the process name to get the color
+    const p = processes.find(proc => proc.name === block.id);
+    const div = document.createElement('div');
+    div.className = "gantt-block";
+    
+    // Fallback to a visible grey if for some reason the color is missing
+    div.style.backgroundColor = p ? p.color : '#475569'; 
+    div.style.width = `${(block.duration / totalTime) * 100}%`;
+    div.innerText = block.id;
+    execChart.appendChild(div);
+});
 
     // 2. Project Timeline Chart (Chart 2)
 timelineRows.innerHTML = '';
